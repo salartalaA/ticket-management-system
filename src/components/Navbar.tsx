@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Image from "next/image";
-import { LogIn, LogOut, Search, UserPlus } from "lucide-react";
-import { Input } from "./ui/input";
+import { LogIn, LogOut, UserPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./theme/ThemeToggle";
 
@@ -10,7 +9,7 @@ export default function Navbar() {
   const user = true;
 
   return (
-    <header className="max-w-7xl mx-auto mt-2 p-5 bg-secondary shadow-md rounded-xl">
+    <header className="max-w-7xl mx-auto mt-2 p-5 bg-background/10 shadow-md border border-border rounded-xl">
       <nav>
         <ul className="flex items-center justify-between">
           <Link href={"/"} className="flex items-center gap-2 md:gap-3">
@@ -25,17 +24,6 @@ export default function Navbar() {
               پروژه تیکت پشتیبانی
             </h3>
           </Link>
-
-          <div className="relative w-72 lg:w-96 hidden md:block">
-            <Input
-              placeholder="... جستجو بر اساس عنوان تیکت"
-              className="w-full pr-8 pl-2 py-1 text-right shadow-xs bg-input text-foreground"
-            />
-            <Search
-              size={16}
-              className="absolute right-2 top-1/2 -translate-y-1/2"
-            />
-          </div>
 
           {user ? (
             <div className="flex items-center gap-2">
@@ -64,16 +52,6 @@ export default function Navbar() {
             </div>
           )}
         </ul>
-        <div className="relative w-full md:hidden mt-3">
-          <Input
-            placeholder="... جستجو بر اساس عنوان تیکت"
-            className="w-full pr-8 pl-2 py-1 text-right shadow-xs bg-input text-foreground"
-          />
-          <Search
-            size={16}
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-          />
-        </div>
       </nav>
     </header>
   );
