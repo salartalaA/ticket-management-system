@@ -23,7 +23,7 @@ import FileUploader from "./FileUploader";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -52,9 +52,11 @@ export default function NewTicketForm({
 
   const [isPending, setIsPending] = useState(false);
 
+  const router = useRouter()
+
   const onSubmit = () => {
     setIsPending(true);
-    redirect("/tickets");
+    router.push("/tickets");
   };
 
   return (
