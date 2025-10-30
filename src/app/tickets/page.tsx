@@ -1,7 +1,7 @@
 "use client";
 
-import { columns, Ticket } from "@/components/tickets/Columns";
-import { DataTable } from "@/components/tickets/DataTable";
+import { columns, Ticket } from "@/components/tickets/data-table/Columns";
+import { DataTable } from "@/components/tickets/data-table/DataTable";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -194,16 +194,19 @@ const getData = async (): Promise<Ticket[]> => {
 
 export default function NewTicketPage() {
   const [data, setData] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getData().then(setData).then(() => setLoading(false));
+    getData()
+      .then(setData)
+      .then(() => setLoading(false));
   }, []);
 
-  if(loading) return  <Loader2 size={32} className="mx-auto mt-32 animate-spin w-fit" />
+  if (loading)
+    return <Loader2 size={32} className="mx-auto mt-32 animate-spin w-fit" />;
 
   return (
-    <div className="max-w-7xl mx-auto mt-5 p-2">
+    <div className="max-w-7xl mx-auto mt-3 p-2">
       <DataTable columns={columns} data={data} />
     </div>
   );

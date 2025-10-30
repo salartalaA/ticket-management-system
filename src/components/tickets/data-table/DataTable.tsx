@@ -22,16 +22,18 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/TablePagination";
 import { useState } from "react";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Search } from "lucide-react";
+} from "../../ui/select";
+import { Search, TicketPlus } from "lucide-react";
 import { DateDialog } from "./DateDialog";
+import { Button } from "../../ui/button";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,40 +67,52 @@ export function DataTable<TData, TValue>({
 
   return (
     <div dir="rtl" className="mb-5">
-      <div className="flex flex-wrap gap-2">
-        <div className="relative">
-          <Input
-            placeholder="جستجو بر اساس عنوان..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
+      <div className="flex justify-between">
+        <div className="flex flex-wrap gap-2">
+          <div className="relative">
+            <Input
+              placeholder="جستجو بر اساس عنوان..."
+              value={
+                (table.getColumn("title")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("title")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm pr-8"
+            />
+            <Search
+              size={16}
+              className="absolute right-2 top-1/2 -translate-y-1/2"
+            />
+          </div>
+          <Select
+            dir="rtl"
+            value={
+              (table.getColumn("status")?.getFilterValue() as string) ?? ""
             }
-            className="max-w-sm pr-8"
-          />
-          <Search
-            size={16}
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-          />
+            onValueChange={(value) =>
+              table
+                .getColumn("status")
+                ?.setFilterValue(value === "all" ? undefined : value)
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="فیلتر بر اساس وضعیت" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">همه</SelectItem>
+              <SelectItem value="pending">در حال بررسی</SelectItem>
+              <SelectItem value="answered">پاسخ داده شده</SelectItem>
+            </SelectContent>
+          </Select>
+          <DateDialog table={table} />
         </div>
-        <Select
-          dir="rtl"
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onValueChange={(value) =>
-            table
-              .getColumn("status")
-              ?.setFilterValue(value === "all" ? undefined : value)
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="فیلتر بر اساس وضعیت" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">همه</SelectItem>
-            <SelectItem value="pending">در حال بررسی</SelectItem>
-            <SelectItem value="answered">پاسخ داده شده</SelectItem>
-          </SelectContent>
-        </Select>
-        <DateDialog table={table} />
+        <Link href={"/new-ticket"}>
+          <Button>
+            <span>ثبت تیکت جدید</span>
+            <TicketPlus />
+          </Button>
+        </Link>
       </div>
       <div className="overflow-hidden rounded-md border mt-5">
         <Table>

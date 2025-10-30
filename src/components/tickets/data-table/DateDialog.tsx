@@ -4,9 +4,10 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import { DatePicker } from "./DatePicker";
+import { Calendar } from "lucide-react";
 
 interface DateDialogProps<TData> {
   table: Table<TData>;
@@ -18,7 +19,10 @@ export function DateDialog<TData>({ table }: DateDialogProps<TData>) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">فیلتر بر اساس تاریخ</Button>
+        <Button variant="outline">
+          <Calendar />
+          <span>فیلتر بر اساس تاریخ</span>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:w-[425px] lg:w-full flex flex-col items-center justify-center">
         <DialogTitle className="sr-only">فیلتر تاریخ</DialogTitle>

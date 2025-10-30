@@ -12,7 +12,7 @@ export default function Navbar() {
     <header className="max-w-7xl mx-auto mt-2 p-5 bg-background/10 shadow-md border border-border rounded-xl">
       <nav>
         <ul className="flex items-center justify-between">
-          <Link href={"/"} className="flex items-center gap-2 md:gap-3">
+          <Link href={"/tickets"} className="flex items-center gap-2 md:gap-3">
             <Image
               className="rounded-full md:size-10 size-7"
               src={"/support.png"}
