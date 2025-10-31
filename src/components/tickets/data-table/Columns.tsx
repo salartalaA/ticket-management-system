@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, toPersianDigits } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment-jalaali";
 moment.loadPersian({ dialect: "persian-modern" });
@@ -25,15 +25,14 @@ export const columns: ColumnDef<Ticket>[] = [
     accessorKey: "department",
     header: () => <div className="text-right">دپارتمان</div>,
     cell: ({ row }) => {
-      const dept = row.getValue('department')
+      const dept = row.getValue("department");
       const deptMap: Record<string, string> = {
         TECHNICAL: "فنی",
         SALES: "فروش",
-        SUPPORT: "پشتیبانی"
-      }
+        SUPPORT: "پشتیبانی",
+      };
 
       return <div className="text-right">{deptMap[dept as string]}</div>;
-
     },
   },
 
@@ -63,20 +62,22 @@ export const columns: ColumnDef<Ticket>[] = [
     header: () => <div className="text-right">تاریخ ثبت</div>,
     cell: ({ row }) => {
       const time = row.getValue("createdAt") as string;
-      const jalali = moment(time)
-        .format("jYYYY/jMM/jDD")
-        .replace(/\d/g, (d: string) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
-
-      return <div className="text-right">{jalali}</div>;
+      const jalali = moment(time).format("jYYYY/jMM/jDD");
+      return <div className="text-right">{toPersianDigits(jalali)}</div>;
     },
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue?.from || !filterValue?.to) return true;
 
-      const rowDate = new Date(row.getValue(columnId));
+      const rowDate = new Date(row.getValue(columnId)); // تاریخ از دیتابیس میلادی
       const fromDate = new Date(filterValue.from);
       const toDate = new Date(filterValue.to);
 
-      return rowDate >= fromDate && rowDate <= toDate;
+      // اختلاف زمان UTC vs local
+      const rowTime = rowDate.getTime();
+      const fromTime = fromDate.getTime();
+      const toTime = toDate.getTime();
+
+      return rowTime >= fromTime && rowTime <= toTime;
     },
   },
 ];
