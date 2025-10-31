@@ -23,18 +23,19 @@ import FileUploader from "./FileUploader";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useCreateTicket } from "@/hooks/use-ticket";
+import useUploadFile from "@/hooks/use-uploadfile";
+import { toast } from "sonner";
 
 const ticketSchema = z.object({
   title: z.string().min(1, "عنوان تیکت را وارد کنید"),
   department: z.enum(
-    ["technical", "sales", "support"],
+    ["TECHNICAL", "SALES", "SUPPORT"],
     "دپارتمان مد نظر خود را انتخاب کنید"
   ),
   description: z.string().optional(),
-  file: z.instanceof(File).nullable().optional(),
+  file: z.instanceof(File).optional(),
 });
 
 type TicketFormData = z.infer<typeof ticketSchema>;
@@ -50,13 +51,30 @@ export default function NewTicketForm({
     formState: { errors },
   } = useForm<TicketFormData>({ resolver: zodResolver(ticketSchema) });
 
-  const [isPending, setIsPending] = useState(false);
+  const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
+  const { isPending, mutate: createTicketMutation } = useCreateTicket();
 
-  const router = useRouter()
+  const onSubmit = async (data: TicketFormData) => {
+    let fileUrl: string | undefined;
 
-  const onSubmit = () => {
-    setIsPending(true);
-    router.push("/tickets");
+    if (data.file) {
+      try {
+        fileUrl = await uploadFile(data.file);
+      } catch (error) {
+        console.error("Upload failed:", error);
+        toast.error("آپلود فایل موفق نبود. تیکت ایجاد نشد.");
+        return;
+      }
+    }
+
+    createTicketMutation({
+      data: {
+        title: data.title,
+        department: data.department,
+        description: data.description,
+        fileUrl,
+      },
+    });
   };
 
   return (
@@ -65,8 +83,7 @@ export default function NewTicketForm({
         <CardHeader>
           <CardTitle>ساخت تیکت جدید</CardTitle>
           <CardDescription>
-            در صورتی که برای استفاده از خدمات ما دچار مشکل شدید، می‌توانید از
-            طریق فرم زیر تیکت ثبت کنید تا در اسرع وقت پیگیری کنیم.
+            برای مشکلات خود تیکت ثبت کنید تا بررسی شود.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -74,36 +91,35 @@ export default function NewTicketForm({
             <FieldGroup>
               <div className="flex gap-4">
                 <Field>
-                  <FieldLabel htmlFor="title">عنوان تیکت</FieldLabel>
+                  <FieldLabel htmlFor="title">عنوان</FieldLabel>
                   <Input
                     {...register("title")}
                     id="title"
-                    type="text"
-                    className="text-sm"
-                    placeholder="مشکل در پرداخت آنلاین"
+                    placeholder="مثال: مشکل پرداخت"
                   />
                   {errors.title && (
                     <p className="text-error">{errors.title.message}</p>
                   )}
                 </Field>
+
                 <Field>
-                  <FieldLabel htmlFor="department">انتخاب دپارتمان</FieldLabel>
+                  <FieldLabel htmlFor="department">دپارتمان</FieldLabel>
                   <Controller
                     control={control}
                     name="department"
                     render={({ field }) => (
                       <Select
                         {...field}
-                        dir="rtl"
                         onValueChange={field.onChange}
+                        dir="rtl"
                       >
                         <SelectTrigger className="w-[180px]" id="department">
-                          <SelectValue placeholder="دپارتمان" />
+                          <SelectValue placeholder="انتخاب کنید" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="technical">فنی</SelectItem>
-                          <SelectItem value="sales">فروش</SelectItem>
-                          <SelectItem value="support">پشتیبانی</SelectItem>
+                          <SelectItem value="TECHNICAL">فنی</SelectItem>
+                          <SelectItem value="SALES">فروش</SelectItem>
+                          <SelectItem value="SUPPORT">پشتیبانی</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -114,7 +130,6 @@ export default function NewTicketForm({
                 </Field>
               </div>
 
-              {/* This allows file uploader to communicate with our form */}
               <Controller
                 control={control}
                 name="file"
@@ -125,19 +140,24 @@ export default function NewTicketForm({
                   />
                 )}
               />
+
               <Field>
-                <FieldLabel htmlFor="descriptions">توضیحات</FieldLabel>
+                <FieldLabel htmlFor="desc">توضیحات</FieldLabel>
                 <Textarea
                   {...register("description")}
-                  id="descriptions"
-                  placeholder="توضیحات بیشتر را می‌توانید در اینجا بنویسید ..."
-                  className="h-24 text-sm"
+                  id="desc"
+                  placeholder="توضیحات بیشتر را در اینجا می‌توانید بنویسید ..."
+                  className="h-32"
                 />
               </Field>
             </FieldGroup>
 
-            <Button type="submit" className="w-full mt-5" disabled={isPending}>
-              {isPending ? (
+            <Button
+              type="submit"
+              className="w-full mt-5"
+              disabled={isPending || isUploading}
+            >
+              {isPending || isUploading ? (
                 <Loader2 className="animate-spin size-5" />
               ) : (
                 "ثبت تیکت"

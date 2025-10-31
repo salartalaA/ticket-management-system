@@ -1,4 +1,4 @@
-import NextAuth, { type AuthOptions, type User, type Session } from "next-auth";
+import NextAuth, { type AuthOptions, type User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
@@ -42,9 +42,9 @@ export const authOptions: AuthOptions = {
       return token as JWT & { user: IUser };
     },
     async session({ session, token }) {
-      (session as Session & { user: IUser }).user = (
-        token as JWT & { user: IUser }
-      ).user;
+      if (token?.user) {
+        session.user = token.user as IUser;
+      }
       return session;
     },
   },

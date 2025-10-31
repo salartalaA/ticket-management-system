@@ -93,16 +93,16 @@ export function DataTable<TData, TValue>({
             onValueChange={(value) =>
               table
                 .getColumn("status")
-                ?.setFilterValue(value === "all" ? undefined : value)
+                ?.setFilterValue(value === "ALL" ? undefined : value)
             }
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="فیلتر بر اساس وضعیت" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">همه</SelectItem>
-              <SelectItem value="pending">در حال بررسی</SelectItem>
-              <SelectItem value="answered">پاسخ داده شده</SelectItem>
+              <SelectItem value="ALL">همه</SelectItem>
+              <SelectItem value="PENDING">در حال بررسی</SelectItem>
+              <SelectItem value="ANSWERED">پاسخ داده شده</SelectItem>
             </SelectContent>
           </Select>
           <DateDialog table={table} />

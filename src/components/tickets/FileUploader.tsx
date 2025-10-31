@@ -10,7 +10,6 @@ import {
   FileUploadItemDelete,
   FileUploadItemMetadata,
   FileUploadItemPreview,
-  FileUploadItemProgress,
   FileUploadList,
   FileUploadTrigger,
 } from "@/components/ui/file-upload";
@@ -64,7 +63,6 @@ export default function FileUploader({ value, onChange }: FileUploaderProps) {
                 </Button>
               </FileUploadItemDelete>
             </div>
-            <FileUploadItemProgress />
           </FileUploadItem>
         </FileUploadList>
       )}

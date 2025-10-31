@@ -9,7 +9,7 @@ export type Ticket = {
   id: string;
   title: string;
   department: string;
-  status: "pending" | "answered";
+  status: "PENDING" | "ANSWERED";
   createdAt: Date | string;
 };
 
@@ -24,24 +24,33 @@ export const columns: ColumnDef<Ticket>[] = [
   {
     accessorKey: "department",
     header: () => <div className="text-right">دپارتمان</div>,
-    cell: ({ row }) => (
-      <div className="text-right">{row.getValue("department")}</div>
-    ),
+    cell: ({ row }) => {
+      const dept = row.getValue('department')
+      const deptMap: Record<string, string> = {
+        TECHNICAL: "فنی",
+        SALES: "فروش",
+        SUPPORT: "پشتیبانی"
+      }
+
+      return <div className="text-right">{deptMap[dept as string]}</div>;
+
+    },
   },
+
   {
     accessorKey: "status",
     header: () => <div className="text-right">وضعیت</div>,
     cell: ({ row }) => {
-      const status = row.getValue("status") as "pending" | "answered";
+      const status = row.getValue("status") as "PENDING" | "ANSWERED";
 
-      const label = status === "pending" ? "در حال بررسی" : "پاسخ داده شده";
+      const label = status === "PENDING" ? "در حال بررسی" : "پاسخ داده شده";
 
       return (
         <div
           className={cn(
             "p-1 rounded-md w-max text-xs text-right",
-            status === "pending" && "bg-yellow-500/60",
-            status === "answered" && "bg-green-500/60"
+            status === "PENDING" && "bg-yellow-500/60",
+            status === "ANSWERED" && "bg-green-500/60"
           )}
         >
           {label}
