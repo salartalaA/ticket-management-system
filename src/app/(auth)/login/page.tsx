@@ -1,25 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useLogin from "@/hooks/useLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const LoginSchema = z.object({
-  email: z.string().min(1, "ایمیل خود را وارد کنید"),
-  password: z.string().min(1, "رمز عبور خود را وارد کنید"),
+  email: z
+    .string()
+    .nonempty("ایمیل خود را وارد کنید")
+    .email("ایمیل معتبر وارد کنید"),
+  password: z
+    .string()
+    .nonempty("رمز عبور خود را وارد کنید")
+    .min(6, "رمز عبور می‌بایست حداقل 6 کاراکتر باشد"),
 });
 
 type LoginFormData = z.infer<typeof LoginSchema>;
@@ -31,11 +31,10 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) });
 
-  const [isPending, setIsPending] = useState(false);
+  const { loginMutation, isPending } = useLogin();
 
-  const onSubmit = () => {
-    setIsPending(true);
-    redirect("/tickets");
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation(data);
   };
 
   return (
@@ -43,7 +42,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-sm">
-            برای دسترسی به تیکت‌های خود، به حساب خود وارد شوید
+            برای دسترسی به تیکت‌هایتان، به حساب خود وارد شوید
           </CardTitle>
         </CardHeader>
         <CardContent>
