@@ -4,34 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useSignup from "@/hooks/useSignup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const LoginSchema = z.object({
+const signupSchema = z.object({
   name: z.string().min(1, "نام خود را وارد کنید"),
-  email: z.string().min(1, "ایمیل خود را وارد کنید"),
-  password: z.string().min(1, "رمز عبور خود را وارد کنید"),
+  email: z
+    .string()
+    .nonempty("ایمیل خود را وارد کنید")
+    .email("ایمیل معتبر وارد کنید"),
+  password: z
+    .string()
+    .nonempty("رمز عبور خود را وارد کنید")
+    .min(6, "رمز عبور می‌بایست حداقل 6 کاراکتر باشد"),
 });
 
-type LoginFormData = z.infer<typeof LoginSchema>;
+type SignupFormData = z.infer<typeof signupSchema>;
 
-export default function LoginPage() {
+export default function SignupPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) });
+  } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema) });
 
-  const [isPending, setIsPending] = useState(false);
+  const { isPending, signupMutation } = useSignup();
 
-  const onSubmit = () => {
-    setIsPending(true);
-    redirect("/tickets");
+  const onSubmit = (data: SignupFormData) => {
+    signupMutation(data);
   };
 
   return (
