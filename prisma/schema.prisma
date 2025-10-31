@@ -1,0 +1,41 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id          String      @id @default(cuid())
+  title       String
+  department  Department
+  description String?
+  fileUrl     String?
+  status      TicketStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Department {
+  TECHNICAL
+  SALES
+  SUPPORT
+}
+
+enum TicketStatus {
+  PENDING
+  ANSWERED
+}
