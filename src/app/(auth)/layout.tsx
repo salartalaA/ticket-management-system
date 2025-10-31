@@ -2,6 +2,11 @@ import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "احراز هویت",
+};
 
 export default async function AuthLayout({
   children,
