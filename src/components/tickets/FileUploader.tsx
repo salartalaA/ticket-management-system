@@ -27,7 +27,7 @@ export default function FileUploader({ value, onChange }: FileUploaderProps) {
     <FileUpload
       maxFiles={1}
       maxSize={5 * 1024 * 1024}
-      accept=".pdf,.png,.jpg"
+      accept=".pdf,.png,.jpg,.jpeg"
       onAccept={(files) => onChange(files[0] || null)}
       className="w-full"
     >

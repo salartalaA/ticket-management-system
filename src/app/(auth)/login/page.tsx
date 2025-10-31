@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useLogin from "@/hooks/useLogin";
+import useLogin from "@/hooks/use-login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -31,7 +31,7 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) });
 
-  const { loginMutation, isPending } = useLogin();
+  const { mutate: loginMutation, isPending } = useLogin();
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation(data);

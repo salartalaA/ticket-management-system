@@ -1,24 +1,20 @@
 "use client";
 
-import { signup } from "@/lib/api";
+import { login } from "@/lib/api";
+import { errorMessages } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const errorMessages: Record<string, string> = {
-  "Email already exists!": "این ایمیل قبلا ثبت شده است",
-  "Unknown error": "خطای ناشناخته‌ای رخ داده است",
-};
-
-export default function useSignup() {
+export default function useLogin() {
   const router = useRouter();
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: signup,
+  const result = useMutation({
+    mutationFn: login,
     onSuccess: () => {
-      toast.success("ثبت نام شما با موفقیت انجام شد");
-      router.push("/login");
+      toast.success("خوش آمدید");
+      router.push("/tickets");
     },
 
     onError: (error: unknown) => {
@@ -36,5 +32,5 @@ export default function useSignup() {
     },
   });
 
-  return { isPending, error, signupMutation: mutate };
+  return result;
 }
