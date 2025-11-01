@@ -3,6 +3,8 @@
 ## 🔗 Demo  
 [Live Demo](https://ticket-management-system-brown.vercel.app/)
 
+🌍Language: Persian
+
 ## ⚡ Installation  
 ```bash
 git clone https://github.com/salartalaA/ticket-management-system.git
