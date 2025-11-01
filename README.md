@@ -20,9 +20,11 @@ You can use this command bellow to create one for yourself
 openssl rand -base64 32
 ```
 2. Push schema to database
+```bash
 npx prisma db push
+```
 
-3. Run the app:  
+4. Run the app:  
 ```bash
 npm run dev
 ```
